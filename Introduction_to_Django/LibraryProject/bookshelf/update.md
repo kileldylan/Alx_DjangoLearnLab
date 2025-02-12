@@ -2,7 +2,7 @@
 
 from bookshelf.models import Books
 
-retrieved_book = Books.objects.get(title="The Pearl")
+retrieved_book = Book.objects.get(title="The Pearl")
 
 #updating the title
 retrieved_book.title = "Origin 001"

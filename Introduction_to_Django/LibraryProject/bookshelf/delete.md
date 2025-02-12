@@ -2,7 +2,7 @@
 
 from bookshelf.models import Books
 
-retrieved_book = Books.objects.get(title="Origin 100")
+retrieved_book = Book.objects.get(title="Origin 100")
 retrived_book.delete()
 # Expected Output: The book instance is successfully deleted from the database.
 
