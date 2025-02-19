@@ -1,8 +1,8 @@
-from django.http import HttpResponse
-import datetime
+from django.views.generic import TemplateView
 
 
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = '<html lang="en"><body>It is now %s. at Witethie</body></html>' % now
-    return HttpResponse(html)
+class AboutView(TemplateView):
+    template_name = "about.html"
+
+class HomeView(TemplateView):
+    template_name = "home.html"
