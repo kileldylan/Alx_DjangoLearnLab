@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}  <!-- Load static files -->
     <meta charset="UTF-8">
     <title>Register</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -13,5 +14,6 @@
         {{ form.as_p }}
         <button type="submit">Register</button>
     </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 </body>
 </html>
