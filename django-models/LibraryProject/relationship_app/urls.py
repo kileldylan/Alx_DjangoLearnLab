@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from relationship_app.views import home,list_books, LibraryDetailView
+from .views import home,list_books, LibraryDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
