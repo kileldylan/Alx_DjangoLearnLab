@@ -1,18 +1,21 @@
 from relationship_app.models import Author, Book, Library, Librarian
 
-# Query all books by a specific author (assuming an author exists)
-author = Author.objects.first()  # Fetch the first author
-if author:
-    books_by_author = author.book_set.all()  # Reverse ForeignKey lookup
-    print(f"Books by {author.name}: {books_by_author}")
+# Query all books by a specific author
+def get_books_by_author(author_name):
+    author = Author.objects.get(name=author_name)  # Use get() instead of first()
+    return author.book_set.all()  # Reverse ForeignKey lookup
 
-# List all books in a specific library
-library = Library.objects.first()  # Fetch the first library
-if library:
-    books_in_library = library.books.all()  # ManyToManyField relation
-    print(f"Books in {library.name}: {books_in_library}")
+# List all books in a library
+def get_books_in_library(library_name):
+    library = Library.objects.get(name=library_name)  # Match expected query format
+    return library.books.all()  # ManyToManyField relation
 
 # Retrieve the librarian for a library
-if library:
-    librarian = library.librarian  # Assuming a OneToOneField relation
-    print(f"Librarian for {library.name}: {librarian}")
+def get_librarian_for_library(library_name):
+    library = Library.objects.get(name=library_name)  # Match expected query format
+    return library.librarian  # OneToOneField relation
+
+# Sample test run (uncomment if testing in Django shell)
+# print(get_books_by_author("J.K. Rowling"))
+# print(get_books_in_library("Central Library"))
+# print(get_librarian_for_library("Central Library"))
