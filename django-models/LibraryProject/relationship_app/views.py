@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Book, Library  # Import the Book model
+from .models import Library, Book  # Import the Book model
 from django.views.generic.detail import DetailView
 
 # Create your views here.
