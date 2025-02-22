@@ -1,8 +1,11 @@
 from django.shortcuts import render,redirect
 from django.shortcuts import render
-from django.http import HttpResponse
 from .models import Library, Book  # Import the Book model
 from django.views.generic.detail import DetailView
+from django.db import models
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 # Create your views here.
 def home(request):
@@ -17,3 +20,8 @@ class LibraryDetailView(DetailView):
     model = Library
     template_name = "relationship_app/library_detail.html"  # Template file to display details
     context_object_name = "library"
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy("login")
+    template_name = "registration/register.html"
