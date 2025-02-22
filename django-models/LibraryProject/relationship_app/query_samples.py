@@ -2,8 +2,8 @@ from relationship_app.models import Author, Book, Library, Librarian
 
 # Query all books by a specific author
 def get_books_by_author(author_name):
-    author = Author.objects.get(name=author_name)  # Use get() instead of first()
-    return author.book_set.all()  # Reverse ForeignKey lookup
+    author = Author.objects.get(name=author_name)  # Ensure exact lookup
+    return Book.objects.filter(author=author)  # Use explicit filtering
 
 # List all books in a library
 def get_books_in_library(library_name):
