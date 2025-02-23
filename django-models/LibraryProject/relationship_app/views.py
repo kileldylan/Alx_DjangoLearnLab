@@ -27,7 +27,7 @@ def register(request):
         form = UserCreationForm()
     
     print("Form being sent to template:", form)  # Debugging step
-    return render(request, "registration/register.html", {"form": form})
+    return render(request, "relatonship_app/register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
     model = Library
@@ -37,14 +37,14 @@ class LibraryDetailView(DetailView):
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
-    template_name = "registration/register.html"
+    template_name = "relatonship_app/register.html"
 
 class UserLoginView(LoginView):
-    template_name = "registration/login.html"
+    template_name = "relationship_app/login.html"
 
     
 class UserLogoutView(LogoutView):
-    template_name = "registration/logout.html"
+    template_name = "relationship_app//logout.html"
 
 def is_admin(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
