@@ -2,15 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from django.views.generic.detail import DetailView
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
-from .models import Library, Book  
-from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
+from .models import Library, Book  
 
 def home(request):
-    return redirect("relationship_app/list_books")
+    return redirect("list_books")  # ✅ Fixed redirect issue
 
 def list_books(request):
     books = Book.objects.all()
@@ -22,11 +20,20 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  
-            return redirect("admin_view")  
+
+            # ✅ Redirect based on user role
+            if hasattr(user, "userprofile"):
+                if user.userprofile.role == "Admin":
+                    return redirect("admin_view")
+                elif user.userprofile.role == "Librarian":
+                    return redirect("librarian_view")
+                elif user.userprofile.role == "Member":
+                    return redirect("member_view")
+            return redirect("home")  # Default redirect
+
     else:
         form = UserCreationForm()
     
-    print("Form being sent to template:", form)  # Debugging step
     return render(request, "relationship_app/register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
@@ -36,25 +43,26 @@ class LibraryDetailView(DetailView):
 
 class SignUpView(CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy("login")  # Redirect to login after signup
+    success_url = reverse_lazy("login")
     template_name = "relationship_app/register.html"
 
 class UserLoginView(LoginView):
     template_name = "relationship_app/login.html"
 
-    
 class UserLogoutView(LogoutView):
-    template_name = "relationship_app//logout.html"
-
+    template_name = "relationship_app/logout.html"  
+    
+# Role checking functions with better error handling
 def is_admin(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+    return user.is_authenticated and getattr(user, "userprofile", None) and user.userprofile.role == "Admin"
 
 def is_librarian(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+    return user.is_authenticated and getattr(user, "userprofile", None) and user.userprofile.role == "Librarian"
 
 def is_member(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+    return user.is_authenticated and getattr(user, "userprofile", None) and user.userprofile.role == "Member"
 
+# Role-based views
 @user_passes_test(is_admin)
 def admin_view(request):
     return render(request, "relationship_app/admin_dashboard.html")
