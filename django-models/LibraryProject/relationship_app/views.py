@@ -35,7 +35,10 @@ def user_register(request):
         if form.is_valid():
             form.save()
             return redirect("login")
-'''
+        else: 
+            form = UserCreationForm()
+            return render(request, "register.html", {"form": form})
+'''     
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
@@ -49,12 +52,12 @@ def user_login(request):
             user = form.get_user()
             login(request, user)
             return redirect("home")
-    else:
-        form = AuthenticationForm()
-    return render(request, "login.html", {"form": form})
+        else:
+            form = AuthenticationForm()
+            return render(request, "login.html", {"form": form})
 
 def user_logout(request):
-    if request.nethod == "POST":
+    if request.method == "POST":
         logout(request)
         return redirect("home")
     
