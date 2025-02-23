@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
-from .views import home, list_books, register, admin_view, librarian_view, member_view, LibraryDetailView, CustomLoginView
-
+from .views import home, list_books, admin_view, librarian_view, member_view, LibraryDetailView, CustomLoginView
+from .views import register
 
 urlpatterns = [
     path("", home, name="home"),
