@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 
 # Create your models here.
 class Author(models.Model):
@@ -27,10 +28,16 @@ class Librarian(models.Model):
 
     def __str__(self):
         return self.name
+ROLE_CHOICES = [
+    ("Admin", "Admin"),
+    ("Librarian", "Librarian"),
+    ("Member", "Member"),
+]
 
-class Profile(models.Model):
+class UserProfile(models.Model):
+   
     user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
-    bio = models.TextField(default='')
+    role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('librarian', 'Librarian'), ('member', 'Member')])
 
     def __str__(self):
-        return self.user.username
+            return self.user.username

@@ -19,10 +19,12 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  #
+            login(request, user)  
             return redirect("home")  
     else:
         form = UserCreationForm()
+    
+    print("Form being sent to template:", form)  # Debugging step
     return render(request, "relationship_app/register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
@@ -33,10 +35,19 @@ class LibraryDetailView(DetailView):
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
-    template_name = "relationship_app/register.html"
+    template_name = "registration/register.html"
 
 class UserLoginView(LoginView):
-    template_name = "relationship_app/login.html"
+    template_name = "registration/login.html"
 
 class UserLogoutView(LogoutView):
-    template_name = "relationship_app/logout.html"
+    template_name = "registration/logout.html"
+
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+
+def is_librarian(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+
+def is_member(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
