@@ -1,4 +1,4 @@
-f'''rom django.shortcuts import render, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
@@ -27,7 +27,7 @@ def register(request):
         form = UserCreationForm()
     
     print("Form being sent to template:", form)  # Debugging step
-    return render(request, "relationship_app/register.html", {"form": form})
+    return render(request, "registration/register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
     model = Library
@@ -58,4 +58,3 @@ def is_librarian(user):
 
 def is_member(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
-'''
