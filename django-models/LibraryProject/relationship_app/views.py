@@ -7,11 +7,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from .models import Library, Book  
 
 def home(request):
-    return redirect("list_books")
+    return redirect("relationship_app/list_books")
 
 def list_books(request):
     books = Book.objects.all()
-    return render(request, "list_books.html", {"books": books})
+    return render(request, "relationship_app/list_books.html", {"books": books})
 
 def register(request):
     if request.method == "POST":
@@ -22,11 +22,11 @@ def register(request):
             return redirect("home")  
     else:
         form = UserCreationForm()
-    return render(request, "register.html", {"form": form})
+    return render(request, "relationship_app/register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = "library_detail.html"
+    template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
 
 def user_register(request):
@@ -37,7 +37,7 @@ def user_register(request):
             return redirect("login")
         else: 
             form = UserCreationForm()
-            return render(request, "register.html", {"form": form})
+            return render(request, "relationship_app/register.html", {"form": form})
 '''     
 class SignUpView(CreateView):
     form_class = UserCreationForm
@@ -54,7 +54,7 @@ def user_login(request):
             return redirect("home")
         else:
             form = AuthenticationForm()
-            return render(request, "login.html", {"form": form})
+            return render(request, "relationship_app/login.html", {"form": form})
 
 def user_logout(request):
     if request.method == "POST":
