@@ -9,4 +9,4 @@ def list_books(request):
     return render(request, "relationship_app/list_books.html", {"books": books})
 
 def register(request):
-    return render(request, "relationship_app/register.html")
+    return render(request, "registration/register.html")

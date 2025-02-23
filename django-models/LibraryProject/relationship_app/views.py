@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+f'''rom django.shortcuts import render, redirect
 from django.contrib.auth import login, logout  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
@@ -42,6 +42,7 @@ class SignUpView(CreateView):
 class UserLoginView(LoginView):
     template_name = "registration/login.html"
 
+    
 class UserLogoutView(LogoutView):
     template_name = "registration/logout.html"
 
@@ -57,3 +58,4 @@ def is_librarian(user):
 
 def is_member(user):
     return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+'''
