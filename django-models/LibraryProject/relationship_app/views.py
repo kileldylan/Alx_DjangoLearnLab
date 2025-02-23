@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import user_passes_test
 from .models import Library, Book  
@@ -25,7 +26,6 @@ def register(request):
             user = form.save()
             login(request, user)  
 
-            # ✅ Redirect based on user role
             if hasattr(user, "userprofile"):
                 if user.userprofile.role == "Admin":
                     return redirect("admin_view")
@@ -78,6 +78,7 @@ def librarian_view(request):
 @user_passes_test(is_member)
 def member_view(request):
     return render(request, "relationship_app/member_view.html")
+
 
 @permission_required("relationship_app.can_add_book", raise_exception=True)
 def add_book(request):
