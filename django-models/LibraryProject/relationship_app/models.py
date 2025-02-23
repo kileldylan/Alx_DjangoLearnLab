@@ -11,8 +11,17 @@ class Author(models.Model):
         return self.name
     
 class Book(models.Model):
-    title = models.CharField(max_length=100)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255)
+    published_date = models.DateField(null=True, blank=True)
+    isbn = models.CharField(max_length=13, unique=True, blank=True, null=True, default=None)  # <- FIXED HERE
+
+    class Meta:
+        permissions = [
+            ("can_add_book", "Can add a book"),
+            ("can_change_book", "Can change a book"),
+            ("can_delete_book", "Can delete a book"),
+        ]
 
     def __str__(self):
         return self.title
@@ -38,7 +47,7 @@ ROLE_CHOICES = [
 
 class UserProfile(models.Model):
    
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('librarian', 'Librarian'), ('member', 'Member')])
 
     def __str__(self):
@@ -47,8 +56,9 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)  # Create profile for new user
+        UserProfile.objects.create(user=instance)  
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()  # Ensure profile is saved
+    user_profile, created = UserProfile.objects.get_or_create(user=instance)
+    user_profile.save()  
