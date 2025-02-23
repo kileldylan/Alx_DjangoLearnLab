@@ -29,22 +29,19 @@ class LibraryDetailView(DetailView):
     template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
 
-def user_register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("login")
-        else: 
-            form = UserCreationForm()
-            return render(request, "relationship_app/register.html", {"form": form})
-'''     
+   
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
     template_name = "register.html"
 
-    '''
+class UserLoginView(LoginView):
+    template_name = "login.html"
+
+class UserLogoutView(LogoutView):
+    template_name = "logout.html"
+
+'''
 def user_login(request):
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
@@ -62,10 +59,3 @@ def user_logout(request):
         return redirect("home")
     
 '''
-class UserLoginView(LoginView):
-    template_name = "login.html"
-
-class UserLogoutView(LogoutView):
-    template_name = "logout.html"
-
-    '''
