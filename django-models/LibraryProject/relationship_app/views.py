@@ -18,11 +18,11 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # ✅ Log in the user immediately after registration
+            login(request, user)  #
             return redirect("home")  # ✅ Redirect to home after signup
     else:
         form = UserCreationForm()
-    return render(request, "registration/register.html", {"form": form})
+    return render(request, "register.html", {"form": form})
 
 class LibraryDetailView(DetailView):
     model = Library
@@ -32,10 +32,10 @@ class LibraryDetailView(DetailView):
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
-    template_name = "registration/register.html"
+    template_name = "register.html"
 
 class UserLoginView(LoginView):
-    template_name = "registration/login.html"
+    template_name = "login.html"
 
 class UserLogoutView(LogoutView):
-    template_name = "registration/logout.html"
+    template_name = "logout.html"
