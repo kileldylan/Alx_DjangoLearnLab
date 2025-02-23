@@ -19,7 +19,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  #
-            return redirect("home")  # ✅ Redirect to home after signup
+            return redirect("home")  
     else:
         form = UserCreationForm()
     return render(request, "register.html", {"form": form})
@@ -29,13 +29,40 @@ class LibraryDetailView(DetailView):
     template_name = "library_detail.html"
     context_object_name = "library"
 
+def user_register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("login")
+'''
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")  # Redirect to login after signup
     template_name = "register.html"
 
+    '''
+def user_login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect("home")
+    else:
+        form = AuthenticationForm()
+    return render(request, "login.html", {"form": form})
+
+def user_logout(request):
+    if request.nethod == "POST":
+        logout(request)
+        return redirect("home")
+    
+'''
 class UserLoginView(LoginView):
     template_name = "login.html"
 
 class UserLogoutView(LogoutView):
     template_name = "logout.html"
+
+    '''
