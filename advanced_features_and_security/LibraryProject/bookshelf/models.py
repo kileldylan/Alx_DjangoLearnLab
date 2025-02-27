@@ -31,6 +31,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -62,9 +63,10 @@ class Book(models.Model):
 
     class Meta:
         permissions = [
-            ("can_add_book", "Can add a book"),
-            ("can_change_book", "Can change a book"),
-            ("can_delete_book", "Can delete a book"),
+            ("can_view", "Can view books"),
+            ("can_create", "Can create books"),
+            ("can_edit", "Can edit books"),
+            ("can_delete", "Can delete books"),
         ]
 
     def __str__(self):
@@ -85,3 +87,4 @@ class Librarian(models.Model):
 
     def __str__(self):
         return self.name
+    
