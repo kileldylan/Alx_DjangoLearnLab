@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from .models import Book
-from .forms import BookForm  # Import Django Form for validation
+from .forms import ExampleForm  # Import Django Form for validation
 
 @permission_required("bookshelf.can_view", raise_exception=True)
 def book_list(request):
@@ -12,7 +12,7 @@ def book_list(request):
 @permission_required("bookshelf.can_create", raise_exception=True)
 def book_create(request):
     if request.method == "POST":
-        form = BookForm(request.POST)
+        form = ExampleForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Book successfully created!")
@@ -20,7 +20,7 @@ def book_create(request):
         else:
             messages.error(request, "Error in form submission. Please check the fields.")
     else:
-        form = BookForm()
+        form = ExampleForm()
     
     return render(request, "bookshelf/form_example.html", {"form": form})
 
@@ -29,7 +29,7 @@ def book_edit(request, book_id):
     book = get_object_or_404(Book, id=book_id)
 
     if request.method == "POST":
-        form = BookForm(request.POST, instance=book)
+        form = ExampleForm(request.POST, instance=book)
         if form.is_valid():
             form.save()
             messages.success(request, "Book details updated successfully!")
@@ -37,7 +37,7 @@ def book_edit(request, book_id):
         else:
             messages.error(request, "Error in form submission. Please check the fields.")
     else:
-        form = BookForm(instance=book)
+        form = ExampleForm(instance=book)
 
     return render(request, "bookshelf/form_example.html", {"form": form, "book": book})
 
