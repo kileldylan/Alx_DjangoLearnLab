@@ -23,10 +23,53 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+qilayt@2u-%^h!vb!ilow!6v7^ql&_$d5k(&y2zf@xtneg6zc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = False  # Must be False in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yourdomain.com']  # Add your production domain or server IP
 
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True  # Protects against XSS
+X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents content-type sniffing
+
+# Enforce HTTPS
+CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are sent over HTTPS only
+SESSION_COOKIE_SECURE = True  # Ensures session cookies are sent over HTTPS only
+SECURE_SSL_REDIRECT = True  # Redirects all HTTP traffic to HTTPS
+
+# Content Security Policy (CSP) - Reduce XSS Risks
+CSP_DEFAULT_SRC = ("'self'",)  # Only allow content from the same origin
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")  # Adjust as needed
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+
+# HSTS (HTTP Strict Transport Security)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Disable Django’s default password storage and use a more secure method
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',  # Stronger than PBKDF2
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher',
+]
+
+# Set secure session and CSRF cookie settings
+CSRF_COOKIE_HTTPONLY = True  # Protects CSRF cookie from JavaScript access
+SESSION_COOKIE_HTTPONLY = True  # Protects session cookie from JavaScript access
+
+# Enable django-csp middleware (install it first: pip install django-csp)
+MIDDLEWARE = [
+    'csp.middleware.CSPMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
 # Application definition
 
@@ -40,17 +83,6 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app'
 ]
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
 ROOT_URLCONF = 'LibraryProject.urls'
 
 TEMPLATES = [
