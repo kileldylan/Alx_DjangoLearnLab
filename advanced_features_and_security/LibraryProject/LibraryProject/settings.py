@@ -65,7 +65,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing
 SECURE_BROWSER_XSS_FILTER = True  # Enables browser's XSS filtering
 
 # Use this if Django is behind a reverse proxy (e.g., Nginx, Heroku)
-'''SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')'''
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Disable Django’s default password storage and use a more secure method
 PASSWORD_HASHERS = [
