@@ -8,4 +8,3 @@ class Book(models.Model):
     title = models.CharField(max_length=50)
     publication_year = models.IntegerField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    
