@@ -1,6 +1,8 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
+from .serializers import BookSerializer
 
 # ListView (Public Read, Authenticated Users Can Create)
 class BookListView(ListView):
