@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponseForbidden
-from rest_framework.permissions import IsAuthenticatedOrReadOnly 
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from .models import Book
 
 class BookListView(ListView):
@@ -18,7 +18,7 @@ class BookCreateView(CreateView):
     fields = ['title', 'author', 'description', 'published_date']
 
     def dispatch(self, request, *args, **kwargs):
-        permission = IsAuthenticatedOrReadOnly()
+        permission = IsAuthenticated()
         if not permission.has_permission(request, self):
             return HttpResponseForbidden("You don't have permission to create a book.")
         return super().dispatch(request, *args, **kwargs)
@@ -40,7 +40,7 @@ class BookDeleteView(DeleteView):
     success_url = '/'
 
     def dispatch(self, request, *args, **kwargs):
-        permission = IsAuthenticatedOrReadOnly()
+        permission = IsAuthenticated()
         if not permission.has_permission(request, self):
             return HttpResponseForbidden("You don't have permission to delete this book.")
         return super().dispatch(request, *args, **kwargs)
