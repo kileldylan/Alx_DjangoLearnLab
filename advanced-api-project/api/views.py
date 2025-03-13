@@ -1,18 +1,26 @@
-from rest_framework import generics, permissions
-from  .models import Book
-from .serializers import BookSerializer
+from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
+from .models import Book
 
-#view to list(get) and create(post) books
-class BookListCreateView(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] #Read for all, write for authenticated users
+class BookListView(ListView):
+    model = Book
+    template_name = 'book_list.html'
+    context_object_name = 'books' 
 
-#view to update books
-# DetailView: Handles GET (retrieve)
-# UpdateView: Handles PUT (update)
-# DeleteView: Handles DELETE
-class BookDetailUpdateUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly] #restricts updates and deletes
+class BookDetailView(DetailView):
+    model = Book
+    template_name = 'book_detail.html'
+
+class BookCreateView(CreateView):
+    model = Book
+    template_name = 'book_create.html'
+    fields = ['title', 'author', 'description', 'published_date']
+
+class BookUpdateView(UpdateView):
+    model = Book
+    template_name = 'book_update.html'
+    fields = ['title', 'author', 'description', 'published_date']
+
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'book_delete.html'
+    success_url = '/'  # Redirect after deleting
