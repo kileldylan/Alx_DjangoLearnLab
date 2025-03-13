@@ -1,8 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
-from .serializers import BookSerializer
 
 # ListView (Public Read, Authenticated Users Can Create)
 class BookListView(ListView):
@@ -19,14 +17,14 @@ class BookDetailView(DetailView):
 class BookCreateView(LoginRequiredMixin, CreateView):
     model = Book
     template_name = 'book_create.html'
-    fields = ['title', 'author', 'description', 'published_date']
+    fields = ['title', 'publication_year' , 'author']
     login_url = '/login/'  # Redirect to login page if unauthenticated
 
 # UpdateView (Only Authenticated Users)
 class BookUpdateView(LoginRequiredMixin, UpdateView):
     model = Book
     template_name = 'book_update.html'
-    fields = ['title', 'author', 'description', 'published_date']
+    fields = ['title', 'publication_year' , 'author']
     login_url = '/login/'
 
 # DeleteView (Only Authenticated Users)
