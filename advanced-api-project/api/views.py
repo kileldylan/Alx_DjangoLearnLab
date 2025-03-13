@@ -1,26 +1,16 @@
-from django.views.generic import ListView, DetailView, DeleteView, CreateView, UpdateView
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
+from .serializers import BookSerializer
 
-class BookListView(ListView):
-    model = Book
-    template_name = 'book_list.html'
-    context_object_name = 'books' 
+# ✅ List and Create View (Public Read, Authenticated Users Can Create)
+class BookListCreateView(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  # Public read, only auth users can create
 
-class BookDetailView(DetailView):
-    model = Book
-    template_name = 'book_detail.html'
-
-class BookCreateView(CreateView):
-    model = Book
-    template_name = 'book_create.html'
-    fields = ['title', 'author', 'description', 'published_date']
-
-class BookUpdateView(UpdateView):
-    model = Book
-    template_name = 'book_update.html'
-    fields = ['title', 'author', 'description', 'published_date']
-
-class BookDeleteView(DeleteView):
-    model = Book
-    template_name = 'book_delete.html'
-    success_url = '/'  # Redirect after deleting
+# ✅ Retrieve, Update, and Delete View (Only Authenticated Users)
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated users can modify/delete
