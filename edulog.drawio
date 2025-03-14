@@ -189,7 +189,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="zR3uIm9y76ukBrxlyxri-9" value="role choices(&#39;admin&#39;, &#39;teacher&#39;, &#39;student&#39;) NOT NULL" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="zR3uIm9y76ukBrxlyxri-7">
+        <mxCell id="zR3uIm9y76ukBrxlyxri-9" value="role choices(&#39;admin&#39; , &#39;student&#39;) NOT NULL" style="shape=partialRectangle;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;" vertex="1" parent="zR3uIm9y76ukBrxlyxri-7">
           <mxGeometry x="30" width="290" height="30" as="geometry">
             <mxRectangle width="290" height="30" as="alternateBounds" />
           </mxGeometry>
