@@ -2,12 +2,19 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.http import HttpResponseForbidden
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .models import Book
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class BookListView(ListView):
     model = Book
     template_name = 'book_list.html'
     context_object_name = 'books'
-
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    fields = ['title', 'publication_year', 'author']
+    search_fields = ['title', 'author']
+    ordering_fields = ['title', 'publication_year', 'author']
+    ordering = ['title']
+    
 class BookDetailView(DetailView):
     model = Book
     template_name = 'book_detail.html'
