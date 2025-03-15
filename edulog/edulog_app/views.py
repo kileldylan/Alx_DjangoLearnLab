@@ -10,7 +10,6 @@ from .permissions import IsAdmin
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 
-#from rest_framework.permissions import AllowAny
 User = get_user_model()
 
 class UserViewSet(viewsets.ModelViewSet):
