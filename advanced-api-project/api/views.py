@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from .models import Book
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django_filters import rest_framework
+from rest_framework import generics
 
 class BookListView(ListView):
     model = Book
@@ -14,7 +16,7 @@ class BookListView(ListView):
     search_fields = ['title', 'author']
     ordering_fields = ['title', 'publication_year', 'author']
     ordering = ['title']
-    
+
 class BookDetailView(DetailView):
     model = Book
     template_name = 'book_detail.html'
