@@ -1,9 +1,9 @@
-from django.test import TestCase, Client
+from django.test import APITestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Book, Author
 
-class BookAPITests(TestCase):
+class BookAPITests(APITestCase):
     def setUp(self):
         # Create a test user
         self.user = User.objects.create_user(username="deelan", password="1609@Kilel")
