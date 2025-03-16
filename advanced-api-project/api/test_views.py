@@ -1,4 +1,4 @@
-from django.test import APITestCase, RequestFactory
+from django.test import APITestCase, RequestFactory, APIClient
 from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status 
@@ -9,6 +9,10 @@ class BookAPITests(APITestCase):
     def setUp(self):
         self.factory = RequestFactory()  # Initialize RequestFactory
         self.user = User.objects.create_user(username="deelan", password="1609@Kilel")
+        self.client = APIClient()
+
+        # Log in the test user
+        self.client.login(username='deelan', password='1609@Kilel')
 
         # Create test authors
         self.author1 = Author.objects.create(name="deelan")
