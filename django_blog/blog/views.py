@@ -39,19 +39,19 @@ def custom_logout(request):
 
 class BlogListView(ListView):
     model = Post
-    template_name = 'blog/blog_list.html'
+    template_name = 'blog/post_list.html'
     context_object_name = 'books'
 
 class BlogDetailView(DetailView):
     model = Post
-    template_name = 'blog/blog_detail.html'
+    template_name = 'blog/post_detail.html'
 
 def is_admin(user):
     return user.is_staff
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    template_name = 'blog/blog_create_edit.html'
+    template_name = 'blog/post_create_edit.html'
     context_object_name = 'post-create'
     fields = ['title', 'content']
 
@@ -69,7 +69,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
 @method_decorator(user_passes_test(is_admin), name='dispatch')
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    template_name = 'blog/blog_create_edit.html'
+    template_name = 'blog/post_create_edit.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -79,7 +79,7 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
 @method_decorator(user_passes_test(is_admin), name='dispatch')  
 class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'blog/blog_delete.html'
+    template_name = 'blog/post_delete.html'
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponseForbidden("You don't have permission to Delete")
