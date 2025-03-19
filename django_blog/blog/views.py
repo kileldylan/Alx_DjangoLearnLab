@@ -8,6 +8,7 @@ from .forms import PostForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import login_required
 
 #view to handle user registration and login
 def register(request):

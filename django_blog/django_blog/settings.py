@@ -58,7 +58,7 @@ STATICFILES_DIRS = [
 
 ROOT_URLCONF = 'django_blog.urls'
 
-LOGIN_REDIRECT_URL = '/post/'  # Redirect to profile page after login
+LOGIN_REDIRECT_URL = '/post/'  # Redirect to home page after login
 
 TEMPLATES = [
     {
