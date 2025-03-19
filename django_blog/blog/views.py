@@ -16,7 +16,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user) #login a user after succesfull login
-            return redirect('home')
+            return redirect('post-list')
     else:
         form = CustomUserCreateForm()
     return render(request, 'blog/register.html', {'form': form})
@@ -70,6 +70,7 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     template_name = 'blog/post_create_edit.html'
+    fields = ['title', 'content']
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -77,9 +78,13 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
 @method_decorator(user_passes_test(is_admin), name='dispatch')  
+
 class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'blog/post_delete.html'
+    template_name = 'blog/post_confirm_delete.html'
+    fields = ['title', 'content']
+    success_url = '/post/'
+
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponseForbidden("You don't have permission to Delete")
