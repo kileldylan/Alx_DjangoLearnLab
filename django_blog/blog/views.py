@@ -7,7 +7,6 @@ from django.http import HttpResponseForbidden
 from .forms import PostForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.decorators import login_required, UserPassesTestMixin
 
 #view to handle user registration and login
