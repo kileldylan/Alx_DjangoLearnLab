@@ -8,6 +8,7 @@ from .forms import PostForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import login_required, UserPassesTestMixin
 
 #view to handle user registration and login
 def register(request):
@@ -50,7 +51,7 @@ def is_admin(user):
     return user.is_staff
 
 @login_required
-class BlogCreateView(CreateView):
+class BlogCreateView(UserPassesTestMixin, CreateView):
     model = Post
     template_name = 'blog/post_create_edit.html'
     context_object_name = 'post-create'
@@ -67,9 +68,8 @@ class BlogCreateView(CreateView):
             return HttpResponseForbidden("You do not have permission to perform this operation!")
         return super().dispatch(request, *args, **kwargs)
     
-@method_decorator(user_passes_test(is_admin), name='dispatch')
 @login_required
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_create_edit.html'
     fields = ['title', 'content']
@@ -79,9 +79,8 @@ class BlogUpdateView(UpdateView):
             return HttpResponseForbidden("You don't have permissions to Update!")
         return super().dispatch(request, *args, **kwargs)
     
-@method_decorator(user_passes_test(is_admin), name='dispatch')  
 @login_required
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     fields = ['title', 'content']
