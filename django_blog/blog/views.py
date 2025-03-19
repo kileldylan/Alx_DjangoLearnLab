@@ -6,8 +6,7 @@ from .models import Post
 from django.http import HttpResponseForbidden
 from .forms import PostForm
 from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 #view to handle user registration and login
 def register(request):
@@ -49,7 +48,8 @@ class BlogDetailView(DetailView):
 def is_admin(user):
     return user.is_staff
 
-class BlogCreateView(LoginRequiredMixin, CreateView):
+@login_required
+class BlogCreateView(CreateView):
     model = Post
     template_name = 'blog/post_create_edit.html'
     context_object_name = 'post-create'
@@ -67,7 +67,8 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
     
 @method_decorator(user_passes_test(is_admin), name='dispatch')
-class BlogUpdateView(LoginRequiredMixin, UpdateView):
+@login_required
+class BlogUpdateView(UpdateView):
     model = Post
     template_name = 'blog/post_create_edit.html'
     fields = ['title', 'content']
@@ -78,8 +79,8 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
 @method_decorator(user_passes_test(is_admin), name='dispatch')  
-
-class BlogDeleteView(LoginRequiredMixin, DeleteView):
+@login_required
+class BlogDeleteView(DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     fields = ['title', 'content']
