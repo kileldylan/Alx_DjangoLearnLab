@@ -18,4 +18,10 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['post', 'author', 'content' , 'created_at', 'updated_at']
+        fields = ['content']
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if len(content) < 5:
+            raise forms.ValidationError("Content muste be 5 characters and above!")
+        return content
