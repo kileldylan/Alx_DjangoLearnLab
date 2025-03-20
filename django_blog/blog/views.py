@@ -131,3 +131,31 @@ class CommentListView(ListView):
         context = super().get_context_data(**kwargs)
         context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])  # Add post to context
         return context
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    fields = ['content', 'author']
+    template_name = 'blog/comment_update.html'
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+    
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author 
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+    
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()
+    
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author #only authors can delete
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])  # Add post to context
+        return context

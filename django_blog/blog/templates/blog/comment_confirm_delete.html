@@ -10,5 +10,5 @@
     <button type="submit">Delete</button>
 </form>
 
-<a href="{% url 'comment-list' %}">Cancel</a>
+<a href="{% url 'comment-list' post.id%}">Cancel</a>
 {% endblock %}
