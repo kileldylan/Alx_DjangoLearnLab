@@ -2,13 +2,14 @@ from django.shortcuts import redirect, render, get_object_or_404
 from .forms import CustomUserCreateForm
 from django.contrib.auth import login,logout
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, DetailView
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from django.http import HttpResponseForbidden
 from .forms import PostForm, CommentForm
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import login_required, user_passes_test
+from  django.db.models import Q
 
 #view to handle user registration and login
 def register(request):
@@ -159,3 +160,21 @@ class CommentDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])  # Add post to context
         return context
+    
+def posts_by_tag(request, tag_name):
+    posts =  Post.objects.filter(tag__name__iexact=tag_name)
+    return render(request, 'blog/post_detail.html', {'posts': posts, 'tag_name': tag_name})
+
+def search_results(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.none()
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query) |
+            Q(author__username__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {'posts': results, 'query': query})

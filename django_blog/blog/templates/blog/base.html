@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <form action="{% url 'search-posts' %}" method="get">
+    <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+    </form>
+
     <header>
         <nav>
             <ul>
