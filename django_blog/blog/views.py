@@ -43,7 +43,7 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-
+    
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
@@ -54,8 +54,8 @@ class PostDetailView(DetailView):
 class PostCreateView(CreateView, LoginRequiredMixin, UserPassesTestMixin):
     model = Post
     template_name = 'blog/post_form.html'
+    form_class = PostForm
     context_object_name = 'post-create'
-    fields = ['title', 'content']
 
     def test_func(self):
         post = self.get_object()
@@ -74,7 +74,7 @@ class PostCreateView(CreateView, LoginRequiredMixin, UserPassesTestMixin):
     
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    template_name = 'blog/post_create_edit.html'
+    template_name = 'blog/post_form.html'
     fields = ['title', 'content']
 
     def test_func(self):
@@ -103,8 +103,8 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class CommentCreateView(CreateView):
     model = Comment
-    fields = ['content', 'author'] #fields to be included in the comment
     template_name = 'blog/comment_form.html'
+    form_class = CommentForm
 
     def form_valid(self, form):
         form.instance.post_id = self.kwargs['pk'] 

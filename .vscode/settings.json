@@ -10,6 +10,7 @@
     "python.testing.unittestEnabled": true,
     "python.analysis.extraPaths": [
         "./practice_exercise",
-        "./practice_exercise/practice_exercise"
+        "./practice_exercise/practice_exercise",
+        "./django_blog"
     ]
 }
