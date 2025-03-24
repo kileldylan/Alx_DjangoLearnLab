@@ -20,7 +20,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 # User Login Serializer
 class UserLoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(max_length=255)  
+    email = serializers.CharField(max_length=255)  
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
