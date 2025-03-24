@@ -1,23 +1,26 @@
 from rest_framework import serializers
-from .models import CustomUser
-from rest_framework.authentication import authenticate
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 
-#User registration serializer
+User = get_user_model()
+
+# User Registration Serializer
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = CustomUser
-        fields = ['id', 'email', 'password', 'bio', 'profile_picture', ]
+        model = User
+        fields = ['id', 'email', 'password', 'bio', 'profile_picture']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        user = CustomUser.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
+        user = User.objects.create_user(**validated_data, password=password)
+        Token.objects.create(user=user)
         return user
 
-#User login serializer  
+
+# User Login Serializer
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -27,8 +30,11 @@ class UserLoginSerializer(serializers.Serializer):
         password = data.get('password')
         
         # Authenticate user
-        user = authenticate(request=self.context.get('request'), username=email, password=password)
+        user = authenticate(username=email, password=password)
         if user and user.is_active:
-            return user  
-
+            token, _ = Token.objects.get_or_create(user=user)
+            return {
+                'user': user,
+                'token': token.key
+            }
         raise serializers.ValidationError("Invalid Credentials")
