@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 
 # User Registration Serializer
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -20,7 +20,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 # User Login Serializer
 class UserLoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255)  
+    email = serializers.EmailField(max_length=255)  
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
