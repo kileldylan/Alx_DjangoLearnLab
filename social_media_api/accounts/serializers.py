@@ -5,11 +5,12 @@ from django.contrib.auth import authenticate
 
 # User Registration Serializer
 class UserRegistrationSerializer(serializers.Serializer):
-    password = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    username = serializers.CharField()
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'password', 'bio', 'profile_picture']
+        fields = ['id', 'username', 'email', 'password', 'bio', 'profile_picture']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
