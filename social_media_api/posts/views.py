@@ -19,9 +19,9 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
     
 class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-
     #Returning comments only for the specified post
     def get_queryset(self):
         return Comment.objects.filter(post_id=self.kwargs['post_pk'])
