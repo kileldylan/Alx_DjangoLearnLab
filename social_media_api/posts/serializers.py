@@ -18,3 +18,16 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['post', 'author', 'content', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
+
+class FeedPostSerializer(PostSerializer):
+    is_liked = serializers.SerializerMethodField()
+    
+    class Meta(PostSerializer.Meta):
+        fields = PostSerializer.Meta.fields + ['is_liked']
+    
+    def get_is_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.likes.filter(id=request.user.id).exists()
+        return False
+    

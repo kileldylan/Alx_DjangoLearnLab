@@ -1,10 +1,15 @@
 from django.shortcuts import render
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action
 from .models import CustomUser
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, FollowSerializer, UserProfileSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 class UserRegistrationView(generics.CreateAPIView):
@@ -31,3 +36,54 @@ class UserLoginView(generics.GenericAPIView):
                 }
             })
         raise Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class FollowViewSet(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = FollowSerializer
+    
+    @action(detail=False, methods=['post'])
+    def follow(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = User.objects.get(id=serializer.validated_data['user_id'])
+        
+        if request.user.follow(user):
+            return Response({'status': 'following'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Already following or invalid user'}, 
+                       status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def unfollow(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = User.objects.get(id=serializer.validated_data['user_id'])
+        
+        if request.user.unfollow(user):
+            return Response({'status': 'unfollowed'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Not following or invalid user'}, 
+                       status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['get'])
+    def profile(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    success = request.user.follow(target_user)  # Uses the model's follow() method
+    if success:
+        return Response({"status": "success", "message": f"Followed {target_user.email}"})
+    return Response({"status": "failed", "message": "Already following or invalid action"}, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    success = request.user.unfollow(target_user)  # Uses the model's unfollow() method
+    if success:
+        return Response({"status": "success", "message": f"Unfollowed {target_user.email}"})
+    return Response({"status": "failed", "message": "Not following or invalid action"}, status=400)

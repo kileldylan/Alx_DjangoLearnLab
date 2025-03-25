@@ -30,7 +30,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     bio = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to="profile_pictures/", null=True, blank=True)
-    followers = models.ManyToManyField("self", symmetrical=False, blank=True, related_name='following')
+    followers = models.ManyToManyField("self", symmetrical=False, blank=True, related_name='user_following')
+    following = models.ManyToManyField("self", symmetrical=False, blank=True, related_name='user_followers')
     is_active = models.BooleanField(default=True)  
     is_staff = models.BooleanField(default=False)
 
@@ -41,3 +42,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def follow(self, user):
+        """Follow another user"""
+        if user != self and not self.following.filter(id=user.id).exists():
+            self.following.add(user)
+            return True
+        return False
+
+    def unfollow(self, user):
+        """Unfollow a user"""
+        if user != self and self.following.filter(id=user.id).exists():
+            self.following.remove(user)
+            return True
+        return False
