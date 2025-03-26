@@ -15,7 +15,7 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['author']
-    search_fields = ['title', 'content']  # Fixed typo: ['title, content'] -> ['title', 'content']
+    search_fields = ['title', 'content'] 
     ordering_filters = ['created_at', 'updated_at']
 
     def perform_create(self, serializer):
@@ -24,17 +24,9 @@ class PostViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], 
             permission_classes=[IsAuthenticated])
     def feed(self, request):
-        """
-        Returns posts from followed users + own posts,
-        ordered by creation date (newest first)
-        """
-        # Get list of followed users directly
+   
         following_users = request.user.following.all()
-
-        # Query posts and apply ordering
-        queryset = Post.objects.filter(
-            author__in=following_users
-        ).order_by('-created_at')  # Matches checker expectation
+        queryset = Post.objects.filter(author__in=following_users).order_by('-created_at')
 
         # Paginate results
         page = self.paginate_queryset(queryset)
