@@ -10,6 +10,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework import permissions
 
 # Create your views here.
 class UserRegistrationView(generics.CreateAPIView):
@@ -38,7 +39,7 @@ class UserLoginView(generics.GenericAPIView):
         raise Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class FollowViewSet(viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowSerializer
     
     @action(detail=False, methods=['post'])
