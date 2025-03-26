@@ -7,6 +7,7 @@ from .permissions import IsOwnerOrReadOnly
 from .serializers import PostSerializer, CommentSerializer, FeedPostSerializer
 from .models import Post, Comment
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import api_view, permission_classes
 
 # Post viewset to handle post-related logic
 class PostViewSet(viewsets.ModelViewSet):
@@ -59,3 +60,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         post_id = self.request.data.get('post')
         serializer.save(author=self.request.user, post_id=post_id)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def feed_posts(request):
+    followed_users = request.user.following.values_list('followed_id', flat=True)
+    posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+    # Serialize posts (adjust based on your serializer)
+    return Response({"posts": posts})
