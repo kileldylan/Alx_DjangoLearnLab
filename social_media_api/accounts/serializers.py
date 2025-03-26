@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 
 User = get_user_model()
 
-class FollowSerializer(serializers.Serializer):
+class FollowSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField()
 
     def validate_user_id(self, value):
@@ -17,7 +17,7 @@ class FollowSerializer(serializers.Serializer):
         return value
 
 # User Registration Serializer
-class UserRegistrationSerializer(serializers.Serializer):
+class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField()
 
     class Meta:
@@ -30,7 +30,6 @@ class UserRegistrationSerializer(serializers.Serializer):
         Token.objects.create(user=user)
         return user
 
-# User Login Serializer
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)  
     password = serializers.CharField(write_only=True)
@@ -42,11 +41,7 @@ class UserLoginSerializer(serializers.Serializer):
         # Authenticate user
         user = authenticate(username=email, password=password)
         if user and user.is_active:
-            token, _ = Token.objects.get_or_create(user=user)
-            return {
-                'user': user,
-                'token': token.key
-            }
+            return user  # Return user object instead of a dict
         raise serializers.ValidationError("Invalid Credentials")
 
 class UserProfileSerializer(serializers.ModelSerializer):

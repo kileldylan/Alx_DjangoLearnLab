@@ -14,10 +14,21 @@ from rest_framework import permissions
 
 # Create your views here.
 class UserRegistrationView(generics.CreateAPIView):
-     permission_classes = [AllowAny]
-     queryset = CustomUser.objects.all()
-     serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
+    queryset = CustomUser.objects.all()
+    serializer_class = UserRegistrationSerializer
      
+    def perform_create(self, serializer):
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            "token": token.key,
+            "user_id": user.id,
+            "email": user.email,
+            "bio": user.bio,
+            "profile_picture": user.profile_picture,
+        }, status=status.HTTP_201_CREATED)
+
 class UserLoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
@@ -25,20 +36,19 @@ class UserLoginView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data
+            user = serializer.validated_data  # Now this is a user object
             token, created = Token.objects.get_or_create(user=user)
             return Response({
                 "token": token.key,
                 "user": {
                     "id": user.id,
-                    "username": user.username,
                     "email": user.email,
-                    "bio": user.bio
                 }
             })
-        raise Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class FollowViewSet(viewsets.GenericViewSet):
+    queryset = CustomUser.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowSerializer
     
@@ -47,7 +57,7 @@ class FollowViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        user = User.objects.get(id=serializer.validated_data['user_id'])
+        user = get_object_or_404(CustomUser, id=serializer.validated_data['user_id'])
         
         if request.user.follow(user):
             return Response({'status': 'following'}, status=status.HTTP_200_OK)
@@ -59,7 +69,7 @@ class FollowViewSet(viewsets.GenericViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        user = User.objects.get(id=serializer.validated_data['user_id'])
+        user = CustomUser.objects.get(id=serializer.validated_data['user_id'])
         
         if request.user.unfollow(user):
             return Response({'status': 'unfollowed'}, status=status.HTTP_200_OK)
