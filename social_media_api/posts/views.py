@@ -77,7 +77,7 @@ class LikePostView(generics.CreateAPIView):
     queryset = Like.objects.all()
 
     def create(self, request, *args, **kwargs):
-        post = generics.get_object_or_404(Post, pk=kwargs.get('pk'))
+        post = generics.get_object_or_404(Post, pk=pk)
         
         like, created = Like.objects.get_or_create(
             user=request.user,
