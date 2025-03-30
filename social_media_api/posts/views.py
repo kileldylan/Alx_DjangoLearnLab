@@ -4,10 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .permissions import IsOwnerOrReadOnly
-from .serializers import PostSerializer, CommentSerializer, FeedPostSerializer
-from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer, FeedPostSerializer, LikeSerializer
+from .models import Post, Comment, Like
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework import generics, status
+from notifications.models import Notification
 
 # Post viewset to handle post-related logic
 class PostViewSet(viewsets.ModelViewSet):
@@ -66,5 +68,67 @@ class CommentViewSet(viewsets.ModelViewSet):
 def feed_posts(request):
     followed_users = request.user.following.values_list('followed_id', flat=True)
     posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
-    # Serialize posts (adjust based on your serializer)
     return Response({"posts": posts})
+
+class LikePostView(generics.CreateAPIView):
+    serializer_class = LikeSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Like.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        post_id = kwargs.get('pk')
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return Response(
+                {'error': 'Post not found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            post=post
+        )
+
+        if created:
+            # Create notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target=post
+            )
+            serializer = self.get_serializer(like)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {'error': 'Post already liked'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class UnlikePostView(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Like.objects.all()
+
+    def get_object(self):
+        post_id = self.kwargs.get('pk')
+        try:
+            return Like.objects.get(
+                user=self.request.user,
+                post_id=post_id
+            )
+        except Like.DoesNotExist:
+            return None
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response(
+                {'error': 'Like not found'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        self.perform_destroy(instance)
+        return Response(
+            {'status': 'Post unliked'},
+            status=status.HTTP_200_OK
+        )
