@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics, status
 from notifications.models import Notification
+from django.shortcuts import get_object_or_404
 
 # Post viewset to handle post-related logic
 class PostViewSet(viewsets.ModelViewSet):
@@ -76,34 +77,21 @@ class LikePostView(generics.CreateAPIView):
     queryset = Like.objects.all()
 
     def create(self, request, *args, **kwargs):
-        post_id = kwargs.get('pk')
-        try:
-            post = Post.objects.get(pk=post_id)
-        except Post.DoesNotExist:
-            return Response(
-                {'error': 'Post not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
-
+        post = get_object_or_404(Post, pk=kwargs.get('pk'))
+        
         like, created = Like.objects.get_or_create(
             user=request.user,
-            post=post
+            post=post,
+            defaults={'user': request.user, 'post': post}
         )
 
         if created:
             # Create notification
-            Notification.objects.create(
-                recipient=post.author,
-                actor=request.user,
-                verb='liked your post',
-                target=post
-            )
+            Notification.objects.create(recipient=post.author, actor=request.user, verb='liked your post',target=post)
             serializer = self.get_serializer(like)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(
-            {'error': 'Post already liked'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        
+        return Response({'error': 'Post already liked'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UnlikePostView(generics.DestroyAPIView):
@@ -111,22 +99,11 @@ class UnlikePostView(generics.DestroyAPIView):
     queryset = Like.objects.all()
 
     def get_object(self):
-        post_id = self.kwargs.get('pk')
-        try:
-            return Like.objects.get(
-                user=self.request.user,
-                post_id=post_id
-            )
-        except Like.DoesNotExist:
-            return None
+        post = get_object_or_404(Post, pk=self.kwargs.get('pk'))
+        return get_object_or_404(Like, user=self.request.user, post=post)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        if not instance:
-            return Response(
-                {'error': 'Like not found'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
         self.perform_destroy(instance)
         return Response(
             {'status': 'Post unliked'},
