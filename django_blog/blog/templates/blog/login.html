@@ -11,6 +11,11 @@
         {{ form.as_p }}
         <button type="submit">Login</button>
     </form>
+    <div class="text-center mt-4">
+        <a href="{% url 'password_reset' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+          Forgot your password?
+        </a>
+    </div>
     <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
 </body>
 </html>

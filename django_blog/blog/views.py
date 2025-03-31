@@ -51,25 +51,20 @@ class PostDetailView(DetailView):
     def is_admin(user):
         return user.is_staff
 
-class PostCreateView(CreateView, LoginRequiredMixin, UserPassesTestMixin):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'blog/post_form.html'
     form_class = PostForm
     context_object_name = 'post-create'
 
-    def test_func(self):
-        post = self.get_object()
-        return self.request.user == post.author or self.request.user.is_superuser
-
+    # Automatically assign logged-in user as the author
     def form_valid(self, form):
-        form.instance.author = self.request.user  # Set logged-in user as author
+        form.instance.author = self.request.user
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseForbidden("You must be logged in to perform this action.")
-        if not request.user.is_superuser:  # or any other role condition
-            return HttpResponseForbidden("You do not have permission to perform this operation!")
+            return HttpResponseForbidden("You must be logged in to create a post.")
         return super().dispatch(request, *args, **kwargs)
     
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

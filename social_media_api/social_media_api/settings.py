@@ -68,7 +68,7 @@ SECURE_BROWSER_XSS_FILTER = True  # Enables browser's XSS filtering
 # Use this if Django is behind a reverse proxy (e.g., Nginx, Heroku)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
