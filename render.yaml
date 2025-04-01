@@ -26,7 +26,7 @@ services:
     # Environment variables (Render will auto-generate/inject these)
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: social_media_api.settings
+        value: social_media_api.social_media_api.settings
       
       - key: SECRET_KEY
         generateValue: true 
