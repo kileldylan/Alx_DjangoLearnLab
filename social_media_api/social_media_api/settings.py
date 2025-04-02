@@ -49,7 +49,7 @@ X_FRAME_OPTIONS = "DENY"  # Prevents clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing
 SECURE_BROWSER_XSS_FILTER = True  # Enables browser's XSS filtering
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['kileldylan.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
