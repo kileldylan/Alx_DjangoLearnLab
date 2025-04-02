@@ -26,8 +26,6 @@ SECRET_KEY = 'django-insecure-s@--f@lk%9$l=vgyqo&b!h@5=r&le9w8d2*&6q#mwjb7i(+*!i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False  # Must be False in production
 
-ALLOWED_HOSTS = ['yourdomain.com']  # Add your production domain or server IP
-
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True  # Protects against XSS
 X_FRAME_OPTIONS = 'DENY'  # Prevents clickjacking
@@ -38,21 +36,7 @@ CSRF_COOKIE_SECURE = True  # Ensures CSRF cookies are sent over HTTPS only
 SESSION_COOKIE_SECURE = True  # Ensures session cookies are sent over HTTPS only
 SECURE_SSL_REDIRECT = True  # Redirects all HTTP traffic to HTTPS
 
-# Content Security Policy (CSP) - Reduce XSS Risks
-CSP_DEFAULT_SRC = ("'self'",)  # Only allow content from the same origin
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")  # Adjust as needed
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
-
 # HSTS (HTTP Strict Transport Security)
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-
-# Redirect all HTTP requests to HTTPS
-SECURE_SSL_REDIRECT = True
-
-# HTTP Strict Transport Security (HSTS)
-SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
@@ -64,9 +48,6 @@ CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = "DENY"  # Prevents clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing
 SECURE_BROWSER_XSS_FILTER = True  # Enables browser's XSS filtering
-
-# Use this if Django is behind a reverse proxy (e.g., Nginx, Heroku)
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
 
@@ -150,14 +131,11 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'socialmedia',
-        'USER': 'kilel',
-        'PASSWORD': '1609@Kilel',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation
