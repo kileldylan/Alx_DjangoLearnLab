@@ -44,6 +44,11 @@ SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
+# settings.py (production only)
+SECURE_HSTS_SECONDS = 30 * 24 * 60 * 60  # 30 days
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
 # Security headers
 X_FRAME_OPTIONS = "DENY"  # Prevents clickjacking
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing
@@ -131,8 +136,12 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'social_media_api',
+        'USER': 'root',
+        'PASSWORD': '1609@Kilel',
+        'HOST' : 'localhost',
+        "PORT": '3306',
     }
 }
 
